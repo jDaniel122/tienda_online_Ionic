@@ -1,0 +1,56 @@
+# Ionic / Angular
+/.ionic
+/www
+/platforms
+/plugins
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Capacitor
+/android
+/ios
+/app/build
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# Logs
+*.log
+log.txt
+
+# Coverage / Tests
+/coverage
+/.sourcemaps
+/.versions
+/.angular
+/.angular/cache
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Misc
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.local
+.env.*.local
