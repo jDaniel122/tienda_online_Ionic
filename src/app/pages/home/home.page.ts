@@ -15,6 +15,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
         <ion-title>Tienda Online</ion-title>
         <ion-buttons slot="end">
           <ion-button (click)="goCart()">🛒 {{ cartCount }}</ion-button>
+          <ion-button color="danger" (click)="logout()"
+            >Cerrar sesión</ion-button
+          >
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
@@ -118,5 +121,10 @@ export class HomePage implements OnInit {
 
   goCart() {
     this.router.navigate(['/cart']);
+  }
+
+  logout() {
+    this.cartService.clearCart(); // opcional
+    this.router.navigate(['/login']);
   }
 }
