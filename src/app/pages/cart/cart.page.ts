@@ -17,10 +17,12 @@ import { CartService } from '../../services/cart.service';
     <ion-content class="ion-padding">
       <ion-list>
         <ion-item *ngFor="let p of cart; let i = index">
-          {{ p.price * 5000 | currency : 'COP ' : 'symbol' : '1.0-0' }}
-          <ion-button slot="end" colot="danger" (click)="removeItem(i)"
-            >❌ ELIMINAR
-          </ion-button>
+          {{ p.title }} - {{ p.price * 5000 | currency : 'COP ' : 'symbol' : '1.0-0' }}
+          <ion-buttons slot="end">
+            <ion-button size="small" (click)="decrease(p.id)">-</ion-button>
+            <span>{{ p.cantidad }}</span>
+            <ion-button size="small" (click)="add(p)">+</ion-button>
+          </ion-buttons>
         </ion-item>
       </ion-list>
 
@@ -45,17 +47,25 @@ export class CartPage implements OnInit {
   constructor(private cartService: CartService) {}
 
   ngOnInit() {
-    this.cart = this.cartService.getCart();
+    this.cart = this.cartService.getItems();
+  }
+
+  add(p: any) {
+    this.cartService.addItem(p);
+    this.cart = this.cartService.getItems();
+  }
+
+  decrease(id: number) {
+    this.cartService.decreaseItem(id);
+    this.cart = this.cartService.getItems();
+  }
+
+  async clearCart() {
+    await this.cartService.clearCart();
+    this.cart = this.cartService.getItems();
   }
 
   getTotal() {
-    return this.cart.reduce((sum, p) => sum + p.price, 0);
-  }
-  async clearCart() {
-    await this.cartService.clearCart();
-    this.cart = this.cartService.getCart();
-  }
-  async removeItem(index: number) {
-    await this.cartService.removeItem(index);
+    return this.cart.reduce((sum, p) => sum + p.price * p.cantidad, 0);
   }
 }

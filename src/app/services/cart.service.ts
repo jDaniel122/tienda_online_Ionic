@@ -17,28 +17,42 @@ export class CartService {
   async loadCart() {
     const { value } = await Preferences.get({ key: 'cart' });
     this.cart = value ? JSON.parse(value) : [];
-    this.cartCount.next(this.cart.length);
+    this.updateCount();
+  }
+
+  private async updateCount() {
+    this.cartCount.next(this.cart.reduce((sum, p) => sum + p.cantidad, 0));
+    await Preferences.set({ key: 'cart', value: JSON.stringify(this.cart) });
   }
 
   async addItem(item: any) {
-    this.cart.push(item);
-    await Preferences.set({ key: 'cart', value: JSON.stringify(this.cart) });
-    this.cartCount.next(this.cart.length);
+    const existing = this.cart.find(p => p.id === item.id);
+    if (existing) {
+      existing.cantidad += 1;
+    } else {
+      this.cart.push({ ...item, cantidad: 1 });
+    }
+    await this.updateCount();
   }
 
-  async removeItem(index: number) {
-    this.cart.splice(index, 1);
-    await Preferences.set({ key: 'cart', value: JSON.stringify(this.cart) });
-    this.cartCount.next(this.cart.length);
+  async decreaseItem(itemId: number) {
+    const existing = this.cart.find(p => p.id === itemId);
+    if (existing) {
+      existing.cantidad -= 1;
+      if (existing.cantidad <= 0) {
+        this.cart = this.cart.filter(p => p.id !== itemId);
+      }
+      await this.updateCount();
+    }
   }
 
   async clearCart() {
     this.cart = [];
-    await Preferences.remove({ key: 'cart' });
-    this.cartCount.next(0);
+    await this.updateCount();
   }
 
-  getCart() {
+  getItems() {
     return this.cart;
   }
 }
+
