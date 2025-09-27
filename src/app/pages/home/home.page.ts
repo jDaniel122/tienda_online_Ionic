@@ -3,6 +3,7 @@ import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Preferences } from '@capacitor/preferences';
 import { CommonModule } from '@angular/common';
+import { CartService } from '../../services/cart.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
@@ -31,30 +32,22 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 })
 export class HomePage implements OnInit {
   productos: any[] = [];
-  cart: any[] = [];
   cartCount = 0;
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router, private http: HttpClient, private cartService: CartService) {}
 
-  async ngOnInit() {
-    this.loadCart();
-    this.http
-      .get<any[]>('https://fakestoreapi.com/products')
-      .subscribe((data) => {
-        this.productos = data;
-      });
+  ngOnInit() {
+    this.cartService.cartCount$.subscribe(count => {
+      this.cartCount = count;
+    });
+
+    this.http.get<any[]>('https://fakestoreapi.com/products').subscribe(data => {
+      this.productos = data;
+    });
   }
 
-  async loadCart() {
-    const { value } = await Preferences.get({ key: 'cart' });
-    this.cart = value ? JSON.parse(value) : [];
-    this.cartCount = this.cart.length;
-  }
-
-  async addToCart(p: any) {
-    this.cart.push(p);
-    this.cartCount = this.cart.length;
-    await Preferences.set({ key: 'cart', value: JSON.stringify(this.cart) });
+  addToCart(p: any) {
+    this.cartService.addItem(p);
   }
 
   goCart() {
