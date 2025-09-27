@@ -17,7 +17,7 @@ import { CartService } from '../../services/cart.service';
     <ion-content class="ion-padding">
       <ion-list>
         <ion-item *ngFor="let p of cart; let i = index">
-          {{ p.title }} - {{ p.price | currency : 'USD' : 'symbol' }}
+          {{ p.price * 5000 | currency : 'COP ' : 'symbol' : '1.0-0' }}
           <ion-button slot="end" colot="danger" (click)="removeItem(i)"
             >❌ ELIMINAR
           </ion-button>
@@ -25,7 +25,7 @@ import { CartService } from '../../services/cart.service';
       </ion-list>
 
       <h2 *ngIf="cart.length > 0">
-        Total: {{ getTotal() | currency : 'USD' : 'symbol' }}
+        Total: {{ getTotal() * 5000 | currency : 'COP' : 'symbol' : '1.0-0' }}
       </h2>
       <ion-button
         expand="block"
